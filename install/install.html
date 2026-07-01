@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Video Offline — Setup</title>
+  <link rel="stylesheet" href="install.css">
+</head>
+<body>
+  <div class="setup-container">
+    <header class="setup-header">
+      <h1 data-i18n="setupTitle">Native Host Setup</h1>
+    </header>
+
+    <!-- Connection status -->
+    <section class="status-section">
+      <div id="statusBox" class="status-box checking">
+        <div id="statusIcon" class="status-icon">?</div>
+        <div class="status-text">
+          <p id="statusText" data-i18n="setupChecking">Checking...</p>
+        </div>
+      </div>
+      <button id="checkBtn" class="check-btn" data-i18n="setupCheckConnection">Check Connection</button>
+    </section>
+
+    <!-- Installation instructions -->
+    <section class="instructions-section">
+      <h2 data-i18n="setupInstructions">Installation Instructions</h2>
+
+      <div class="platform-block">
+        <h3 data-i18n="setupWindowsTitle">Windows</h3>
+        <ol>
+          <li data-i18n="setupWindowsStep1">Open the native-host folder in File Explorer</li>
+          <li data-i18n="setupWindowsStep2">Double-click install_host.bat</li>
+          <li data-i18n="setupWindowsStep3">Follow the on-screen prompts to complete installation</li>
+        </ol>
+      </div>
+
+      <div class="platform-block">
+        <h3 data-i18n="setupMacLinuxTitle">macOS / Linux</h3>
+        <ol>
+          <li data-i18n="setupMacLinuxStep1">Open a terminal in the native-host folder</li>
+          <li><span data-i18n="setupMacLinuxStep2">Run: chmod +x install_host.sh && ./install_host.sh</span>
+            <pre>chmod +x install_host.sh && ./install_host.sh</pre>
+          </li>
+          <li data-i18n="setupMacLinuxStep3">Follow the on-screen prompts to complete installation</li>
+        </ol>
+      </div>
+
+      <p class="after-install" data-i18n="setupAfterInstall">After installation, click "Check Connection" to verify.</p>
+    </section>
+
+    <!-- Open folder button -->
+    <section class="folder-section">
+      <button id="openFolderBtn" class="folder-btn" data-i18n="setupOpenFolder">Open native-host Folder</button>
+    </section>
+  </div>
+
+  <script src="../lib/i18n.js"></script>
+  <script src="install.js"></script>
+</body>
+</html>

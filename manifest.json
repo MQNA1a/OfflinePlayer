@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "version": "3.0.0",
+  "default_locale": "en",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAziB8GG9ZmnIMhat8FQgOagDfbzNxPY3upKLPnwtCV8PIYV16n8gNoTgy9whJU/kgqcmvblyGwznfmaNWtiyvbpo0IWi8j3HAawHH60NzZm1Go71j8xMzffW9zOFuYYnv+3eCpzDnxXnrYjUcYr9UrUKjFlDpN/1TqxVcXHpcdzATbuVMFhoKMRhjybJEpS47/QyNYoVThKHHfm678e4og9UUHluXzxCc97mNgVEz2S3Zia8TTEeGkUQTyl7LWT8672uE3zJalpUZ/vWHVfsCMIC4mWXKxVpLN+Mk49fKSqqMknUH/C5yK7ZiovzldOIzaAuUuSu0fO3LSQTwGWJuFQIDAQAB",
+  "description": "__MSG_extDescription__",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "activeTab",
+    "notifications",
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "*://*.youtube.com/*",
+    "http://localhost:8462/*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/watch*"],
+      "js": ["content/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; media-src 'self' http://localhost:8462 http://127.0.0.1:8462; img-src 'self' https: data: http://localhost:8462 http://127.0.0.1:8462"
+  }
+}

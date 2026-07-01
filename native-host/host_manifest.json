@@ -1,0 +1,7 @@
+{
+  "name": "com.youtubeoffline",
+  "description": "Video Offline Player Native Host",
+  "path": "REPLACE_WITH_HOST_DIR\\run_host.bat",
+  "type": "stdio",
+  "allowed_origins": ["chrome-extension://REPLACE_WITH_EXTENSION_ID/"]
+}

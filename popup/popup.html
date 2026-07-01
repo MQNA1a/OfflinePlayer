@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <h1>Video Offline</h1>
+      <div class="header-actions">
+        <button id="reloadVideos" class="reload-btn" data-i18n-title="loadingDots" title="Reload">↻</button>
+        <button id="setupBtn" class="setup-btn" data-i18n="setup">Setup</button>
+        <button id="openLibrary" class="library-btn" data-i18n="library">Library</button>
+      </div>
+    </header>
+
+    <div id="videoList" class="video-list">
+      <p class="empty-msg" data-i18n="noVideos">No downloaded videos</p>
+    </div>
+  </div>
+  <script src="../lib/i18n.js"></script>
+  <script src="../lib/storage.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+{
+  "extName": {
+    "message": "Video Offline Player"
+  },
+  "extDescription": {
+    "message": "Download and watch YouTube videos offline using yt-dlp + Native Messaging."
+  },
+
+  "qualityAuto": {
+    "message": "Quality: Auto"
+  },
+  "saveOffline": {
+    "message": "Save Offline"
+  },
+  "downloadingCancel": {
+    "message": "Downloading... $PERCENT$% (Cancel)",
+    "placeholders": {
+      "percent": { "content": "$1", "example": "45" }
+    }
+  },
+  "downloadingShort": {
+    "message": "Downloading..."
+  },
+  "cancelling": {
+    "message": "Cancelling..."
+  },
+  "commErrorReload": {
+    "message": "Communication error. Please reload the page."
+  },
+  "extensionUpdatedReload": {
+    "message": "The extension has been updated. Please reload the page."
+  },
+  "extensionUpdatedReloadF5": {
+    "message": "The extension has been updated. Please reload (F5) the page."
+  },
+  "downloadComplete": {
+    "message": "Download complete!"
+  },
+  "downloadCompleteNotif": {
+    "message": "Download complete"
+  },
+  "errorPrefix": {
+    "message": "Error: $ERROR$",
+    "placeholders": {
+      "error": { "content": "$1", "example": "Network error" }
+    }
+  },
+  "downloadCancelled": {
+    "message": "Download cancelled"
+  },
+
+  "library": {
+    "message": "Library"
+  },
+  "noVideos": {
+    "message": "No downloaded videos"
+  },
+  "downloadingBadge": {
+    "message": "Downloading"
+  },
+
+  "allVideos": {
+    "message": "All Videos"
+  },
+  "playlists": {
+    "message": "Playlists"
+  },
+  "newPlaylist": {
+    "message": "New Playlist"
+  },
+  "playlistNamePlaceholder": {
+    "message": "Playlist name"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "create": {
+    "message": "Create"
+  },
+  "addToPlaylist": {
+    "message": "Add to Playlist"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "backToLibrary": {
+    "message": "\u2190 Back to Library"
+  },
+  "loadingDots": {
+    "message": "Loading..."
+  },
+  "resumeFrom": {
+    "message": "Resume from $TIME$",
+    "placeholders": {
+      "time": { "content": "$1", "example": "5:30" }
+    }
+  },
+  "fromBeginning": {
+    "message": "From beginning"
+  },
+  "previous": {
+    "message": "\u2190 Previous"
+  },
+  "next": {
+    "message": "Next \u2192"
+  },
+  "noVideosTitle": {
+    "message": "No videos"
+  },
+  "noVideosDesc": {
+    "message": "Click \"Save Offline\" on a YouTube video page to download it"
+  },
+  "deleteConfirm": {
+    "message": "Delete this video?"
+  },
+  "noPlaylistsMsg": {
+    "message": "No playlists. Create a playlist first."
+  },
+  "delete": {
+    "message": "Delete"
+  },
+
+  "noVideoSpecified": {
+    "message": "No video specified"
+  },
+  "videoNotFound": {
+    "message": "Video data not found"
+  },
+  "serverConnectError": {
+    "message": "Cannot connect to server. Please reinstall the native host."
+  },
+  "videoLoadError": {
+    "message": "Failed to load video. The file may not exist."
+  },
+  "unknown": {
+    "message": "Unknown"
+  },
+
+  "errNetworkDisconnected": {
+    "message": "Connection was lost during download. Please try again later."
+  },
+  "errDnsError": {
+    "message": "Cannot connect to the network. Check your internet connection or configure proxy in config.json if needed."
+  },
+  "errConnectionRefused": {
+    "message": "Connection to server was refused. Please try again later."
+  },
+  "errTimeout": {
+    "message": "Connection timed out. The network may be unstable. Please try again later."
+  },
+
+  "setup": {
+    "message": "Setup"
+  },
+  "setupTitle": {
+    "message": "Native Host Setup"
+  },
+  "setupCheckConnection": {
+    "message": "Check Connection"
+  },
+  "setupChecking": {
+    "message": "Checking..."
+  },
+  "setupConnected": {
+    "message": "Connected — Native host is running."
+  },
+  "setupNotConnected": {
+    "message": "Not connected — Native host is not installed or not running."
+  },
+  "setupInstructions": {
+    "message": "Installation Instructions"
+  },
+  "setupWindowsTitle": {
+    "message": "Windows"
+  },
+  "setupWindowsStep1": {
+    "message": "Open the native-host folder in File Explorer"
+  },
+  "setupWindowsStep2": {
+    "message": "Double-click install_host.bat"
+  },
+  "setupWindowsStep3": {
+    "message": "Follow the on-screen prompts to complete installation"
+  },
+  "setupMacLinuxTitle": {
+    "message": "macOS / Linux"
+  },
+  "setupMacLinuxStep1": {
+    "message": "Open a terminal in the native-host folder"
+  },
+  "setupMacLinuxStep2": {
+    "message": "Run: chmod +x install_host.sh && ./install_host.sh"
+  },
+  "setupMacLinuxStep3": {
+    "message": "Follow the on-screen prompts to complete installation"
+  },
+  "setupAfterInstall": {
+    "message": "After installation, click \"Check Connection\" to verify."
+  },
+  "setupOpenFolder": {
+    "message": "Open native-host Folder"
+  }
+}

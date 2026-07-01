@@ -212,5 +212,14 @@
   },
   "quality": {
     "message": "\u753b\u8cea"
+  },
+  "playbackSpeed": {
+    "message": "\u518d\u751f\u901f\u5ea6"
+  },
+  "normal": {
+    "message": "\u901a\u5e38"
+  },
+  "pip": {
+    "message": "\u30d4\u30af\u30c1\u30e3\u30a4\u30f3\u30d4\u30af\u30c1\u30e3"
   }
 }

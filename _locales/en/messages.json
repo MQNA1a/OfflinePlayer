@@ -212,5 +212,14 @@
   },
   "quality": {
     "message": "Quality"
+  },
+  "playbackSpeed": {
+    "message": "Playback speed"
+  },
+  "normal": {
+    "message": "Normal"
+  },
+  "pip": {
+    "message": "Picture-in-Picture"
   }
 }

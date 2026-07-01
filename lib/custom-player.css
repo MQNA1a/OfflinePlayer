@@ -1,0 +1,349 @@
+/* ── Custom Video Player (YouTube-style) ── */
+
+.cp-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  padding: 0 12px 8px;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cp-wrapper.cp-show-controls .cp-controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Progress bar ── */
+.cp-progress-container {
+  position: relative;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.cp-progress-track {
+  position: relative;
+  width: 100%;
+  height: 5px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 3px;
+  overflow: visible;
+  transition: height 0.15s;
+}
+
+.cp-progress-container:hover .cp-progress-track {
+  height: 7px;
+}
+
+.cp-progress-buffered {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: rgba(255,255,255,0.35);
+  border-radius: 3px;
+  transition: width 0.2s;
+}
+
+.cp-progress-played {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #ff0000;
+  border-radius: 3px;
+}
+
+.cp-progress-handle {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  background: #ff0000;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.15s;
+}
+
+.cp-progress-container:hover .cp-progress-handle {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ── Control buttons row ── */
+.cp-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+}
+
+.cp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s;
+  padding: 0;
+}
+
+.cp-btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.cp-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+/* ── Volume ── */
+.cp-volume-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.cp-volume-slider {
+  width: 0;
+  height: 4px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: width 0.2s ease;
+  position: relative;
+}
+
+.cp-volume-group:hover .cp-volume-slider {
+  width: 60px;
+}
+
+.cp-volume-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 2px;
+}
+
+/* ── Time display ── */
+.cp-time {
+  color: #fff;
+  font-size: 13px;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  margin: 0 6px;
+  white-space: nowrap;
+}
+
+/* ── Spacer ── */
+.cp-spacer {
+  flex: 1;
+}
+
+/* ── Settings menu ── */
+.cp-settings-wrap {
+  position: relative;
+}
+
+.cp-settings-menu {
+  position: absolute;
+  bottom: 44px;
+  right: 0;
+  min-width: 180px;
+  background: rgba(28,28,28,0.96);
+  border-radius: 8px;
+  padding: 6px 0;
+  display: none;
+  z-index: 30;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.cp-settings-menu.open {
+  display: block;
+}
+
+.cp-settings-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  color: #aaa;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.cp-settings-menu-header:hover {
+  color: #fff;
+}
+
+.cp-settings-menu-header svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.cp-settings-menu-list {
+  padding: 0;
+}
+
+.cp-settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.cp-settings-item:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.cp-settings-item.active {
+  color: #fff;
+}
+
+.cp-settings-item .cp-check {
+  width: 18px;
+  height: 18px;
+  fill: #fff;
+  flex-shrink: 0;
+}
+
+.cp-settings-item:not(.active) .cp-check {
+  visibility: hidden;
+}
+
+.cp-settings-item .cp-item-label {
+  flex: 1;
+}
+
+.cp-settings-item .cp-item-value {
+  color: #aaa;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+/* ── Center play button ── */
+.cp-center-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 68px;
+  height: 48px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+.cp-wrapper.cp-paused .cp-center-play {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cp-center-play:hover {
+  background: rgba(0,0,0,0.8);
+}
+
+.cp-center-play svg {
+  width: 32px;
+  height: 32px;
+  fill: #fff;
+}
+
+/* ── Back button (overlay, top-left) ── */
+.cp-back-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 25;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.25s, background 0.15s;
+  pointer-events: none;
+}
+
+.cp-wrapper.cp-show-controls .cp-back-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cp-back-btn:hover {
+  background: rgba(204, 0, 0, 0.8);
+}
+
+/* ── Skip buttons ── */
+.cp-skip-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.25s, background 0.15s;
+  z-index: 15;
+  color: #fff;
+  pointer-events: none;
+}
+
+.cp-wrapper.cp-show-controls .cp-skip-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cp-skip-btn:hover {
+  background: rgba(204, 0, 0, 0.7);
+}
+
+.cp-skip-back {
+  left: 16px;
+}
+
+.cp-skip-fwd {
+  right: 16px;
+}
+
+.cp-skip-btn svg {
+  width: 28px;
+  height: 28px;
+}

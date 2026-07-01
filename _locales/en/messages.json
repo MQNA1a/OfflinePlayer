@@ -205,5 +205,12 @@
   },
   "setupOpenFolder": {
     "message": "Open native-host Folder"
+  },
+
+  "settings": {
+    "message": "Settings"
+  },
+  "quality": {
+    "message": "Quality"
   }
 }

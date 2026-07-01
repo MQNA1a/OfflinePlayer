@@ -11,12 +11,25 @@ let playlistData = null;
 let currentVideoId = null;
 let currentPlaylistId = null;
 let lastSavedTime = 0;
+let customPlayer = null;
 
 // ── Playback position memory ──
 const POS_KEY_PREFIX = 'playbackPos_';
 const resumeToast = document.getElementById('resumeToast');
 const resumeTextEl = document.getElementById('resumeText');
 const resumeFromStartBtn = document.getElementById('resumeFromStart');
+
+// ── Initialize custom player ──
+customPlayer = new CustomPlayer(video, playerWrapper, {
+  onEnded: () => {
+    clearPosition(currentVideoId);
+    playNext();
+  },
+  onBack: () => {
+    if (document.referrer) history.back();
+    else window.close();
+  },
+});
 
 async function savePosition() {
   if (!currentVideoId || !video.duration) return;
@@ -49,7 +62,6 @@ video.addEventListener('timeupdate', () => {
 });
 
 video.addEventListener('pause', savePosition);
-video.addEventListener('ended', () => clearPosition(currentVideoId));
 
 window.addEventListener('pagehide', savePosition);
 
@@ -57,59 +69,6 @@ resumeFromStartBtn.addEventListener('click', () => {
   resumeToast.classList.add('hidden');
   video.currentTime = 0;
   video.play().catch(() => {});
-});
-
-// ── Skip buttons ──
-document.getElementById('skipBack').addEventListener('click', () => {
-  video.currentTime = Math.max(0, video.currentTime - 10);
-});
-document.getElementById('skipFwd').addEventListener('click', () => {
-  video.currentTime = Math.min(video.duration || 0, video.currentTime + 10);
-});
-
-// ── Keyboard shortcuts ──
-document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-  switch (e.key.toLowerCase()) {
-    case 'arrowleft':
-    case 'j':
-      video.currentTime = Math.max(0, video.currentTime - 10);
-      e.preventDefault();
-      break;
-    case 'arrowright':
-    case 'l':
-      video.currentTime = Math.min(video.duration || 0, video.currentTime + 10);
-      e.preventDefault();
-      break;
-    case ' ':
-    case 'k':
-      if (video.paused) video.play(); else video.pause();
-      e.preventDefault();
-      break;
-    case 'arrowup':
-      video.volume = Math.min(1, video.volume + 0.1);
-      e.preventDefault();
-      break;
-    case 'arrowdown':
-      video.volume = Math.max(0, video.volume - 0.1);
-      e.preventDefault();
-      break;
-    case 'f':
-      if (document.fullscreenElement) document.exitFullscreen();
-      else playerWrapper.requestFullscreen();
-      e.preventDefault();
-      break;
-    case 'm':
-      video.muted = !video.muted;
-      e.preventDefault();
-      break;
-    default:
-      if (/^[0-9]$/.test(e.key)) {
-        video.currentTime = (video.duration || 0) * (parseInt(e.key) / 10);
-        e.preventDefault();
-      }
-  }
 });
 
 // ── Init ──
@@ -151,6 +110,7 @@ async function loadVideo(videoId) {
     if (sourceEl) {
       sourceEl.textContent = meta.source === 'netflix' ? 'Netflix' : 'YouTube';
     }
+    if (customPlayer) customPlayer.setQuality(meta.qualityLabel || '');
   }
 
   if (!meta?.videoUrl) {
@@ -259,7 +219,6 @@ async function loadPlaylist(playlistId) {
 
   document.getElementById('prevBtn').addEventListener('click', playPrevious);
   document.getElementById('nextBtn').addEventListener('click', playNext);
-  video.addEventListener('ended', playNext);
 }
 
 function getCurrentIndex() {

@@ -205,5 +205,12 @@
   },
   "setupOpenFolder": {
     "message": "native-host \u30d5\u30a9\u30eb\u30c0\u3092\u958b\u304f"
+  },
+
+  "settings": {
+    "message": "\u8a2d\u5b9a"
+  },
+  "quality": {
+    "message": "\u753b\u8cea"
   }
 }

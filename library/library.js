@@ -20,6 +20,7 @@ const resumeTextEl = document.getElementById('resumeText');
 let currentVideoId = null;
 let lastSavedTime = 0;
 let autoPlay = true;
+let customPlayer = null;
 const POS_KEY_PREFIX = 'playbackPos_';
 
 // ── Init ──
@@ -104,18 +105,18 @@ function setupEventListeners() {
 
 // ── Player setup ──
 function setupPlayerListeners() {
-  document.getElementById('closePlayer').addEventListener('click', closePlayer);
+  // Initialize custom player
+  customPlayer = new CustomPlayer(videoEl, playerWrapper, {
+    onEnded: () => {
+      clearPosition(currentVideoId);
+      if (autoPlay) playNext();
+    },
+    onBack: closePlayer,
+  });
 
   document.getElementById('autoplayCheckbox').addEventListener('change', (e) => {
     autoPlay = e.target.checked;
     chrome.storage.local.set({ autoPlay });
-  });
-
-  document.getElementById('skipBack').addEventListener('click', () => {
-    videoEl.currentTime = Math.max(0, videoEl.currentTime - 10);
-  });
-  document.getElementById('skipFwd').addEventListener('click', () => {
-    videoEl.currentTime = Math.min(videoEl.duration || 0, videoEl.currentTime + 10);
   });
 
   document.getElementById('resumeFromStart').addEventListener('click', () => {
@@ -130,58 +131,9 @@ function setupPlayerListeners() {
     }
   });
   videoEl.addEventListener('pause', savePosition);
-  videoEl.addEventListener('ended', () => {
-    clearPosition(currentVideoId);
-    if (autoPlay) playNext();
-  });
 
   document.getElementById('prevBtn').addEventListener('click', playPrevious);
   document.getElementById('nextBtn').addEventListener('click', playNext);
-
-  document.addEventListener('keydown', (e) => {
-    if (playerPanel.classList.contains('hidden')) return;
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-    switch (e.key.toLowerCase()) {
-      case 'arrowleft':
-      case 'j':
-        videoEl.currentTime = Math.max(0, videoEl.currentTime - 10);
-        e.preventDefault();
-        break;
-      case 'arrowright':
-      case 'l':
-        videoEl.currentTime = Math.min(videoEl.duration || 0, videoEl.currentTime + 10);
-        e.preventDefault();
-        break;
-      case ' ':
-      case 'k':
-        if (videoEl.paused) videoEl.play(); else videoEl.pause();
-        e.preventDefault();
-        break;
-      case 'arrowup':
-        videoEl.volume = Math.min(1, videoEl.volume + 0.1);
-        e.preventDefault();
-        break;
-      case 'arrowdown':
-        videoEl.volume = Math.max(0, videoEl.volume - 0.1);
-        e.preventDefault();
-        break;
-      case 'f':
-        if (document.fullscreenElement) document.exitFullscreen();
-        else playerWrapper.requestFullscreen();
-        e.preventDefault();
-        break;
-      case 'm':
-        videoEl.muted = !videoEl.muted;
-        e.preventDefault();
-        break;
-      default:
-        if (/^[0-9]$/.test(e.key)) {
-          videoEl.currentTime = (videoEl.duration || 0) * (parseInt(e.key) / 10);
-          e.preventDefault();
-        }
-    }
-  });
 
   window.addEventListener('pagehide', savePosition);
 }
@@ -242,6 +194,7 @@ function closePlayer() {
   videoGrid.classList.remove('hidden');
   mainHeader.classList.remove('hidden');
   document.getElementById('upNextList').classList.add('hidden');
+  if (customPlayer) customPlayer._showControls();
 }
 
 // ── Up Next list ──
@@ -306,6 +259,7 @@ async function loadVideoInline(videoId) {
     document.getElementById('videoQuality').textContent = meta.qualityLabel || '';
     document.getElementById('videoSize').textContent = meta.fileSize ? formatSize(meta.fileSize) : '';
     document.getElementById('videoSource').textContent = meta.source === 'netflix' ? 'Netflix' : 'YouTube';
+    if (customPlayer) customPlayer.setQuality(meta.qualityLabel || '');
   } else {
     document.getElementById('videoTitle').textContent = videoId;
   }

@@ -84,7 +84,13 @@
     "message": "Close"
   },
   "backToLibrary": {
-    "message": "\u2190 Back to Library"
+    "message": "\u2190"
+  },
+  "autoplay": {
+    "message": "Autoplay"
+  },
+  "upNext": {
+    "message": "Up Next"
   },
   "loadingDots": {
     "message": "Loading..."

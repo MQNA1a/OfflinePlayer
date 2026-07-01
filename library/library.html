@@ -41,6 +41,8 @@
         <div class="player-wrapper" id="playerWrapper">
           <video id="videoPlayer" controls></video>
 
+          <button id="closePlayer" class="back-btn-overlay" data-i18n="backToLibrary" title="Back to Library">←</button>
+
           <div id="skipBack" class="skip-btn skip-back" data-i18n-title="previous" title="10s back">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8z"/><text x="12" y="16" text-anchor="middle" font-size="7" font-weight="bold" fill="currentColor">10</text></svg>
           </div>
@@ -60,7 +62,6 @@
         </div>
 
         <div class="player-info">
-          <button id="closePlayer" class="back-btn" data-i18n="backToLibrary">← Back to Library</button>
           <h1 id="videoTitle"></h1>
           <div class="player-meta">
             <span id="videoSource"></span>
@@ -68,11 +69,22 @@
             <span id="videoQuality"></span>
             <span id="videoSize"></span>
           </div>
-          <div id="playlistControls" class="playlist-controls hidden">
-            <button id="prevBtn" class="nav-btn-player" data-i18n="previous">← Previous</button>
-            <span id="playlistPosition"></span>
-            <button id="nextBtn" class="nav-btn-player" data-i18n="next">Next →</button>
+          <div class="player-controls-bar">
+            <div id="playlistControls" class="playlist-controls hidden">
+              <button id="prevBtn" class="nav-btn-player" data-i18n="previous">← Previous</button>
+              <span id="playlistPosition"></span>
+              <button id="nextBtn" class="nav-btn-player" data-i18n="next">Next →</button>
+            </div>
+            <label class="autoplay-toggle">
+              <input type="checkbox" id="autoplayCheckbox" checked>
+              <span data-i18n="autoplay">Autoplay</span>
+            </label>
           </div>
+        </div>
+
+        <div id="upNextList" class="up-next-list hidden">
+          <h2 data-i18n="upNext">Up Next</h2>
+          <div id="upNextItems"></div>
         </div>
       </div>
     </main>

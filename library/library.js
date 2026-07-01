@@ -19,6 +19,7 @@ const resumeTextEl = document.getElementById('resumeText');
 
 let currentVideoId = null;
 let lastSavedTime = 0;
+let autoPlay = true;
 const POS_KEY_PREFIX = 'playbackPos_';
 
 // ── Init ──
@@ -34,6 +35,11 @@ chrome.runtime.onMessage.addListener((msg) => {
 });
 
 async function init() {
+  // Load autoplay setting
+  const result = await chrome.storage.local.get('autoPlay');
+  autoPlay = result.autoPlay !== false;
+  document.getElementById('autoplayCheckbox').checked = autoPlay;
+
   await syncAndLoad();
   renderPlaylists();
   renderVideos();
@@ -100,6 +106,11 @@ function setupEventListeners() {
 function setupPlayerListeners() {
   document.getElementById('closePlayer').addEventListener('click', closePlayer);
 
+  document.getElementById('autoplayCheckbox').addEventListener('change', (e) => {
+    autoPlay = e.target.checked;
+    chrome.storage.local.set({ autoPlay });
+  });
+
   document.getElementById('skipBack').addEventListener('click', () => {
     videoEl.currentTime = Math.max(0, videoEl.currentTime - 10);
   });
@@ -121,7 +132,7 @@ function setupPlayerListeners() {
   videoEl.addEventListener('pause', savePosition);
   videoEl.addEventListener('ended', () => {
     clearPosition(currentVideoId);
-    playNext();
+    if (autoPlay) playNext();
   });
 
   document.getElementById('prevBtn').addEventListener('click', playPrevious);
@@ -206,7 +217,7 @@ function openInlinePlayer(videoId) {
   mainHeader.classList.add('hidden');
   playerPanel.classList.remove('hidden');
 
-  // Playlist controls
+  // Playlist controls (only for explicit playlists)
   const playlistControls = document.getElementById('playlistControls');
   if (currentView !== 'all' && currentView !== 'youtube' && currentView !== 'netflix') {
     const playlist = allPlaylists.find((p) => p.id === currentView);
@@ -220,6 +231,7 @@ function openInlinePlayer(videoId) {
     playlistControls.classList.add('hidden');
   }
 
+  renderUpNext(videoId);
   loadVideoInline(videoId);
 }
 
@@ -229,6 +241,56 @@ function closePlayer() {
   playerPanel.classList.add('hidden');
   videoGrid.classList.remove('hidden');
   mainHeader.classList.remove('hidden');
+  document.getElementById('upNextList').classList.add('hidden');
+}
+
+// ── Up Next list ──
+function renderUpNext(videoId) {
+  const list = getCurrentVideoList();
+  const idx = list.findIndex((v) => v.videoId === videoId);
+
+  const upNextList = document.getElementById('upNextList');
+  const upNextItems = document.getElementById('upNextItems');
+
+  if (list.length <= 1) {
+    upNextList.classList.add('hidden');
+    return;
+  }
+
+  const upNext = [
+    ...list.slice(idx + 1),
+    ...list.slice(0, idx),
+  ];
+
+  upNextList.classList.remove('hidden');
+
+  const fallbackThumb = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 9%22%3E%3Crect fill=%22%23333%22 width=%2216%22 height=%229%22/%3E%3C/svg%3E';
+
+  upNextItems.innerHTML = upNext.map((v) => {
+    const duration = v.lengthSeconds ? formatDuration(v.lengthSeconds) : '';
+    const sourceBadge = v.source === 'netflix'
+      ? '<span class="source-badge netflix">Netflix</span>'
+      : '<span class="source-badge youtube">YouTube</span>';
+    return `
+      <div class="up-next-item" data-video-id="${v.videoId}">
+        <img src="${v.thumbnail || fallbackThumb}" alt="">
+        <div class="up-next-item-info">
+          <div class="up-next-item-title">${escapeHtml(v.title || v.videoId)}</div>
+          <div class="up-next-item-meta">
+            ${sourceBadge}
+            ${v.author ? `<span>${escapeHtml(v.author)}</span>` : ''}
+            ${duration ? `<span>${duration}</span>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  upNextItems.querySelectorAll('.up-next-item').forEach((item) => {
+    item.addEventListener('click', () => {
+      loadVideoInline(item.dataset.videoId);
+    });
+  });
 }
 
 async function loadVideoInline(videoId) {
@@ -306,6 +368,25 @@ async function loadVideoInline(videoId) {
   if (!document.getElementById('playlistControls').classList.contains('hidden')) {
     updatePlaylistPosition();
   }
+
+  renderUpNext(videoId);
+}
+
+// ── Current video list (works for all views, not just playlists) ──
+function getCurrentVideoList() {
+  let videos = allVideos.filter((v) => v.status === 'complete' || v.status === 'downloading');
+
+  if (currentView === 'youtube' || currentView === 'netflix') {
+    videos = videos.filter((v) => (v.source || 'youtube') === currentView);
+  } else if (currentView !== 'all') {
+    const playlist = allPlaylists.find((p) => p.id === currentView);
+    if (playlist) {
+      const ids = playlist.videoIds || [];
+      videos = videos.filter((v) => ids.includes(v.videoId));
+    }
+  }
+
+  return videos.sort((a, b) => b.downloadDate - a.downloadDate);
 }
 
 // ── Playlist navigation ──
@@ -316,28 +397,26 @@ function getCurrentPlaylistVideoIds() {
 }
 
 function playPrevious() {
-  const ids = getCurrentPlaylistVideoIds();
-  if (!ids) return;
-  const idx = ids.indexOf(currentVideoId);
+  const list = getCurrentVideoList();
+  const idx = list.findIndex((v) => v.videoId === currentVideoId);
   if (idx <= 0) return;
-  loadVideoInline(ids[idx - 1]);
+  loadVideoInline(list[idx - 1].videoId);
 }
 
 function playNext() {
-  const ids = getCurrentPlaylistVideoIds();
-  if (!ids) return;
-  const idx = ids.indexOf(currentVideoId);
-  if (idx < 0 || idx >= ids.length - 1) return;
-  loadVideoInline(ids[idx + 1]);
+  const list = getCurrentVideoList();
+  const idx = list.findIndex((v) => v.videoId === currentVideoId);
+  if (idx < 0 || idx >= list.length - 1) return;
+  loadVideoInline(list[idx + 1].videoId);
 }
 
 function updatePlaylistPosition() {
-  const ids = getCurrentPlaylistVideoIds();
-  if (!ids) return;
-  const idx = ids.indexOf(currentVideoId);
-  document.getElementById('playlistPosition').textContent = `${idx + 1} / ${ids.length}`;
+  const list = getCurrentVideoList();
+  const idx = list.findIndex((v) => v.videoId === currentVideoId);
+  if (idx < 0) return;
+  document.getElementById('playlistPosition').textContent = `${idx + 1} / ${list.length}`;
   document.getElementById('prevBtn').disabled = idx <= 0;
-  document.getElementById('nextBtn').disabled = idx >= ids.length - 1;
+  document.getElementById('nextBtn').disabled = idx >= list.length - 1;
 }
 
 // ── Playlists ──
